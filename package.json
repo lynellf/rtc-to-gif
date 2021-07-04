@@ -2,6 +2,7 @@
   "name": "rtc-to-gif",
   "version": "0.0.0",
   "scripts": {
+    "start": "vite",
     "dev": "vite",
     "build": "tsc && vite build",
     "serve": "vite preview"
@@ -10,7 +11,8 @@
     "@types/recordrtc": "^5.6.5",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
-    "recordrtc": "^5.6.2"
+    "recordrtc": "^5.6.2",
+    "save-as": "^0.1.8"
   },
   "devDependencies": {
     "@types/react": "^17.0.0",
