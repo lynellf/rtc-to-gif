@@ -73,13 +73,37 @@ function getStartHandler(setRecorder: TSetRecorder) {
   };
 }
 
+async function getFfmpegCoreUrl() {
+  const mod = await import("@ffmpeg/core/dist/ffmpeg-core.js?url");
+  return mod.default;
+}
+
+async function transcode(blob: Blob | undefined, filename = "recording.webm") {
+  if (!blob) return null;
+  const mod = await import("@ffmpeg/ffmpeg");
+  const { createFFmpeg } = mod;
+  const corePath = await getFfmpegCoreUrl();
+  const ffmpeg = createFFmpeg({
+    log: true,
+    corePath,
+  });
+  const blobBuffer = await new Response(blob).arrayBuffer();
+  const uInt8Arr = new Uint8Array(blobBuffer);
+  await ffmpeg.load();
+  ffmpeg.FS("writeFile", filename, uInt8Arr);
+  await ffmpeg.run("-i", filename, "recording.gif");
+  const data = ffmpeg.FS("readFile", "recording.gif");
+  return new Blob([data.buffer], { type: "image/gif" });
+}
+
 function getSaveBlob(recorder: TRecorder | null) {
-  return (filename = "recording.webm") =>
+  return (filename = "recording") =>
     async () => {
       const mod = await import("save-as");
       const saveAs = mod.saveAs;
       const blob = recorder?.getBlob();
-      saveAs(blob, filename);
+      const gif = await transcode(blob, `${filename}.webm`);
+      gif ? saveAs(gif, `${filename}.gif`) : undefined;
     };
 }
 
