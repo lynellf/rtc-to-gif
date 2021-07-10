@@ -64,12 +64,14 @@ type TTranscodeParam = {
   args?: string;
   ffmpeg: FFmpeg | null;
 };
-// todo: break this fn up
 async function transcode({ blob, filename, ffmpeg, args }: TTranscodeParam) {
   if (!blob) return null;
   const blobBuffer = await new Response(blob).arrayBuffer();
   const uInt8Arr = new Uint8Array(blobBuffer);
-  await ffmpeg?.load();
+  const isLoaded = ffmpeg?.isLoaded();
+  if (!isLoaded) {
+    ffmpeg?.load();
+  }
   ffmpeg?.FS("writeFile", `${filename}.webm`, uInt8Arr);
   const _args = args?.split(",") ?? ([] as string[]);
   await ffmpeg?.run("-i", `${filename}.webm`, ..._args, "recording.gif");
