@@ -70,7 +70,7 @@ async function transcode({ blob, filename, ffmpeg, args }: TTranscodeParam) {
   const uInt8Arr = new Uint8Array(blobBuffer);
   const isLoaded = ffmpeg?.isLoaded();
   if (!isLoaded) {
-    ffmpeg?.load();
+    await ffmpeg?.load();
   }
   ffmpeg?.FS("writeFile", `${filename}.webm`, uInt8Arr);
   const _args = args?.split(",") ?? ([] as string[]);
