@@ -2,16 +2,16 @@ import { useState, useEffect } from "react";
 import { useMediaStream } from "./useMediaStream";
 import type { Options } from "recordrtc";
 
-type TIsRecording = "recording";
-type TNotRecording = "notRecording";
-type TError = "error";
+type TIsRecording = "rtcRecorder/recording";
+type TNotRecording = "rtcRecorder/notRecording";
+type TError = "rtcRecorder/error";
 type TCTX = {
   state: TIsRecording | TNotRecording | TError;
   recorder: TRecorder | null;
   error: Error | null;
 };
 const INITIAL_CTX: TCTX = {
-  state: "notRecording",
+  state: "rtcRecorder/notRecording",
   recorder: null,
   error: null,
 };
@@ -58,13 +58,13 @@ type TDispatch = React.Dispatch<React.SetStateAction<TCTX>>;
 
 function getRecorderSetter(dispatch: TDispatch) {
   return async (recorder: TRecorder) => {
-    dispatch({ state: "recording", recorder, error: null });
+    dispatch({ state: "rtcRecorder/recording", recorder, error: null });
     return recorder;
   };
 }
 
 function getErrorSetter(dispatch: TDispatch) {
-  return (error: Error) => dispatch({ state: "error", recorder: null, error });
+  return (error: Error) => dispatch({ state: "rtcRecorder/error", recorder: null, error });
 }
 
 function getCleanup(dispatch: TDispatch) {
