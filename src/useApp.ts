@@ -109,6 +109,21 @@ function getStopHandler({ recorder, clearCtx, saveBlob }: TGetStopParam) {
   };
 }
 
+function getPrinter() {
+  const cache: string[] = [];
+  const printer = <M>(msg: M) =>  {
+    const asStr = `${msg}`;
+    const hasMsg = cache.includes(asStr);
+    cache.push(asStr);
+    if (hasMsg) return;
+    console.log(msg)
+  }
+
+  return printer
+}
+
+const print = getPrinter();
+
 export function useApp({
   ffmpegArgs,
   filename,
@@ -153,7 +168,7 @@ export function useApp({
 
   // log state changes
   useEffect(() => {
-    enableLogging ? states.forEach(console.info) : null;
+    enableLogging ? print(states) : null;
   }, [enableLogging, states]);
 
   // bubble up errors to dispatch

@@ -12,9 +12,9 @@ type Await<T> = T extends {
   ? U
   : T;
 
-type TInit = "init";
-type TError = "error";
-type TReady = "ready";
+type TInit = "ffmpeg/init";
+type TError = "ffmpeg/error";
+type TReady = "ffmpeg/ready";
 type TState = TInit | TError | TReady;
 
 type TCtx = {
@@ -24,7 +24,7 @@ type TCtx = {
 };
 
 const INITIAL_CTX: TCtx = {
-  state: "init",
+  state: "ffmpeg/init",
   error: null,
   ffmpeg: null,
 };
@@ -56,11 +56,11 @@ function getStartFfmpeg(options: TOptions) {
 
 type TDispatch = Dispatch<SetStateAction<TCtx>>;
 function getSetFfmpeg(dispatch: TDispatch) {
-  return (ffmpeg: FFmpeg) => dispatch({ state: "ready", error: null, ffmpeg });
+  return (ffmpeg: FFmpeg) => dispatch({ state: "ffmpeg/ready", error: null, ffmpeg });
 }
 
 function getSetError(dispatch: TDispatch) {
-  return (error: Error) => dispatch({ state: "error", error, ffmpeg: null });
+  return (error: Error) => dispatch({ state: "ffmpeg/error", error, ffmpeg: null });
 }
 
 type TStartFfmpeg = ReturnType<typeof getStartFfmpeg>;

@@ -1,7 +1,7 @@
 import { useState } from "react";
-type TError = "error";
-type TNoStream = "noStream";
-type THasStream = "hasStream";
+type TError = "stream/error";
+type TNoStream = "stream/noStream";
+type THasStream = "stream/hasStream";
 type TState = {
   state: TNoStream | THasStream | TError;
   stream: MediaStream | null;
@@ -9,7 +9,7 @@ type TState = {
 };
 
 const INITIAL_STATE: TState = {
-  state: "noStream",
+  state: "stream/noStream",
   stream: null,
   error: null,
 };
@@ -42,13 +42,13 @@ function getEventSender(dispatch: TDispatch) {
 type TSendEvent = (event: TEvents) => void;
 function getStreamSetter(sendEvent: TSendEvent) {
   return async (stream: MediaStream) => {
-    sendEvent({ state: "hasStream", stream, error: null });
+    sendEvent({ state: "stream/hasStream", stream, error: null });
     return stream;
   };
 }
 
 function getErrorSetter(sendEvent: TSendEvent) {
-  return (error: Error) => sendEvent({ state: "error", stream: null, error });
+  return (error: Error) => sendEvent({ state: "stream/error", stream: null, error });
 }
 
 type TSetStream = (stream: MediaStream) => Promise<MediaStream>;
