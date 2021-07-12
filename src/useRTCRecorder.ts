@@ -53,7 +53,7 @@ function getRecorderInit(options = DEFAULT_OPTIONS) {
   };
 }
 
-type TRecorder = Await<ReturnType<ReturnType<typeof getRecorderInit>>>;
+export type TRecorder = Await<ReturnType<ReturnType<typeof getRecorderInit>>>;
 type TDispatch = React.Dispatch<React.SetStateAction<TCTX>>;
 
 function getRecorderSetter(dispatch: TDispatch) {
