@@ -9,7 +9,7 @@ export default function Input({
 }: TRecord) {
   const inputType = type === "input/number" ? "number" : "text";
   return (
-    <section>
+    <fieldset>
       <label htmlFor={keyname as string}>{label as string}</label>
       <input
         id={keyname as string}
@@ -17,6 +17,6 @@ export default function Input({
         onChange={handler as (e: unknown) => void}
         value={(value as React.ReactText) ?? ""}
       />
-    </section>
+    </fieldset>
   );
 }
