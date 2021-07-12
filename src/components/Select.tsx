@@ -8,7 +8,7 @@ export default function Select({
   options,
 }: TRecord) {
   return (
-    <section>
+    <fieldset>
       <label htmlFor={keyname as string}>{label as string}</label>
       <select
         name={keyname as string}
@@ -22,6 +22,6 @@ export default function Select({
           </option>
         ))}
       </select>
-    </section>
+    </fieldset>
   );
 }

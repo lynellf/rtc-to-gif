@@ -3,10 +3,13 @@ import "./App.css";
 import { DEFAULT_OPTIONS as RTC_OPTIONS } from "./useRTCRecorder";
 import { DEFAULT_OPTIONS as FFMPEG_OPTIONS } from "./useFfmpeg";
 import { useInput } from "./useInput";
-import RTCSettings from "./RTCSettings";
-import FfmpegSettings from "./FfmpegSettings";
 import { useApp } from "./useApp";
-import Input from "./components/Input";
+import ControlPanel from "./components/ControlPanel";
+import Main from "./components/Main";
+import Printer from "./components/Printer";
+import Processing from "./components/Processing";
+import Err from './components/Error'
+import Recording from './components/Recording'
 
 type TRecord = Record<string, unknown>;
 const DEFAULT_FILENAME = {
@@ -28,7 +31,7 @@ function App() {
   } as TRecord);
   const [filenameOption, dispatchFilenameEv] = useInput(DEFAULT_FILENAME);
 
-  const { state, error, handleStart, handleStop } = useApp({
+  const { state, error, handleStart, handleStop, ffmpeg, recorder } = useApp({
     recorderOptions,
     ffmpegOptions,
     ffmpegArgs: ffmpegOptions.args as string,
@@ -38,36 +41,47 @@ function App() {
   const handleFilenameChange = getHandleFilename(dispatchFilenameEv);
   if (state === "app/error") {
     return (
-      <main>
-        <h1>{error?.message}</h1>
-      </main>
+      <Main>
+        <Err error={error} />
+        <Printer {...{ rtcRecorder: recorder, ffmpeg }} />
+      </Main>
     );
   }
 
   if (state === "app/processing") {
     return (
-      <main>
-        <h1>Processing Media...</h1>
-      </main>
+      <Main>
+        <Processing />
+        <Printer {...{ rtcRecorder: recorder, ffmpeg }} />
+      </Main>
     );
   }
 
+  if (state === 'app/recording') {
+    return (
+      <Main>
+        <Recording handleStop={handleStop} />
+        <Printer {...{ rtcRecorder: recorder, ffmpeg }} />
+      </Main>
+    );
+  }
+  
+
   return (
-    <main className="App">
-      <Input
-        label="File Name"
-        type="input/string"
-        handler={handleFilenameChange}
-        value={filenameOption?.filename ?? ""}
-        keyname="filename"
+    <Main>
+      <ControlPanel
+        {...{
+          ffmpegOptions,
+          recorderOptions,
+          handleFilenameChange,
+          handleStart,
+          dispatchFfmpegEv,
+          dispatchRecorderEv,
+          filenameOption,
+        }}
       />
-      <RTCSettings handleInput={dispatchRecorderEv} values={recorderOptions} />
-      <FfmpegSettings handleInput={dispatchFfmpegEv} values={ffmpegOptions} />
-      <section>
-        <button onClick={handleStart}>Start Recording</button>
-        <button onClick={handleStop}>Stop Recording</button>
-      </section>
-    </main>
+      <Printer {...{ rtcRecorder: recorder, ffmpeg }}/>
+    </Main>
   );
 }
 
